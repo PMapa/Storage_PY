@@ -1,29 +1,8 @@
+
 from tkinter import ttk
 import openpyxl
 import pandas as pd
 import tkinter as tk
-
-def read_xlsx():
-    # Abrir o arquivo xlsx
-    wb = openpyxl.load_workbook('vendas.xlsx')
-    # Selecionar a planilha
-    ws = wb.active
-    # Ler as informações das colunas A:F
-    data = []
-    for row in ws.iter_rows(min_row=0, max_col=6):
-        data.append([cell.value for cell in row])
-    return data
-
-def write_xlsx(data):
-    # Abrir o arquivo xlsx
-    wb = openpyxl.load_workbook('vendas.xlsx')
-    # Selecionar a planilha
-    ws = wb.active
-    # Adicionar uma nova linha com as informações do formulário
-    ws.append(data)
-    # Salvar o arquivo xlsx
-    wb.save('vendas.xlsx')
-
 
 def atualizar_table_frame():
     # Remover todos os widgets existentes no table_frame
@@ -46,20 +25,34 @@ def atualizar_table_frame():
 
 
     # Adicione seus novos dados aqui
-    wbL = openpyxl.load_workbook('vendas.xlsx')
-    wsL = wbL.active
-    novos_dados = wsL
+    novos_dados = data
 
     # Recriar os widgets no table_frame com os novos dados
-    for row in df.itertuples(index=False):
-        tv.insert('', 'end', values=tuple(row))
-
-#    for dado in novos_dados:
+    for dado in novos_dados:
         # Supondo que você esteja usando Labels para exibir os dados
-  #      label = tk.Label(table_frame, text=dado)
-   #     label.pack()
+        label = tk.Label(table_frame, text=dado)
+        label.pack()
 
+def read_xlsx():
+    # Abrir o arquivo xlsx
+    wb = openpyxl.load_workbook('vendas.xlsx')
+    # Selecionar a planilha
+    ws = wb.active
+    # Ler as informações das colunas A:F
+    data = []
+    for row in ws.iter_rows(min_row=0, max_col=6):
+        data.append([cell.value for cell in row])
+    return data
 
+def write_xlsx(data):
+    # Abrir o arquivo xlsx
+    wb = openpyxl.load_workbook('vendas.xlsx')
+    # Selecionar a planilha
+    ws = wb.active
+    # Adicionar uma nova linha com as informações do formulário
+    ws.append(data)
+    # Salvar o arquivo xlsx
+    wb.save('vendas.xlsx')
 
 # Criar a janela principal
 root = tk.Tk()
@@ -91,10 +84,27 @@ itens_consumidos_label.grid(row=3, column=0, padx=5, pady=5)
 itens_consumidos_entry = tk.Entry(form_frame)
 itens_consumidos_entry.grid(row=3, column=1, padx=5, pady=5)
 
+def add_to_spreadsheet():
+    # Ler as informações do formulário
+    quarto = quarto_entry.get()
+    camareira = camareira_entry.get()
+    itens_consumidos = itens_consumidos_entry.get()
+    data = [quarto, camareira, itens_consumidos]
+    
+    # Adicionar as informações à planilha
+    write_xlsx(data)
+    
+    # Limpar os campos do formulário
+    quarto_entry.delete(0, tk.END)
+    camareira_entry.delete(0, tk.END)
+    itens_consumidos_entry.delete(0, tk.END)
+
 # Criar o widget Button para adicionar as informações à planilha
 add_button = tk.Button(root, text='Adicionar', command=atualizar_table_frame)
-#add_button.pack()
 add_button.pack(side=tk.BOTTOM)
+
+
+
 
 #df = openpyxl.load_workbook('vendas.xlsx')
 #df = pd.read_excel('vendas.xlsx', usecols=range(6))
